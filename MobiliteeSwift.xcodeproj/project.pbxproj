@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		CA9B738925A7343E00BE1D56 /* MobiliteeSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA9B737F25A7343E00BE1D56 /* MobiliteeSwift.framework */; };
-		CA9B738E25A7343E00BE1D56 /* MobiliteeSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9B738D25A7343E00BE1D56 /* MobiliteeSwiftTests.swift */; };
-		CA9B739025A7343E00BE1D56 /* MobiliteeSwift.h in Headers */ = {isa = PBXBuildFile; fileRef = CA9B738225A7343E00BE1D56 /* MobiliteeSwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -24,10 +22,8 @@
 
 /* Begin PBXFileReference section */
 		CA9B737F25A7343E00BE1D56 /* MobiliteeSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MobiliteeSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CA9B738225A7343E00BE1D56 /* MobiliteeSwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MobiliteeSwift.h; sourceTree = "<group>"; };
 		CA9B738325A7343E00BE1D56 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CA9B738825A7343E00BE1D56 /* MobiliteeSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobiliteeSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		CA9B738D25A7343E00BE1D56 /* MobiliteeSwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobiliteeSwiftTests.swift; sourceTree = "<group>"; };
 		CA9B738F25A7343E00BE1D56 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -71,7 +67,6 @@
 		CA9B738125A7343E00BE1D56 /* MobiliteeSwift */ = {
 			isa = PBXGroup;
 			children = (
-				CA9B738225A7343E00BE1D56 /* MobiliteeSwift.h */,
 				CA9B738325A7343E00BE1D56 /* Info.plist */,
 			);
 			path = MobiliteeSwift;
@@ -80,7 +75,6 @@
 		CA9B738C25A7343E00BE1D56 /* MobiliteeSwiftTests */ = {
 			isa = PBXGroup;
 			children = (
-				CA9B738D25A7343E00BE1D56 /* MobiliteeSwiftTests.swift */,
 				CA9B738F25A7343E00BE1D56 /* Info.plist */,
 			);
 			path = MobiliteeSwiftTests;
@@ -93,7 +87,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CA9B739025A7343E00BE1D56 /* MobiliteeSwift.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -201,7 +194,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CA9B738E25A7343E00BE1D56 /* MobiliteeSwiftTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
