@@ -103,7 +103,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         })
     }
     
-    func test_load_deliversEmptyResultOn200HTTPResponseWithEmptyJSON() {
+    func test_load_deliversEmptyResultOn200HTTPResponseWithEmptyJSONAndCode00() {
         let (sut, client) = makeSUT()
 
         let exp = expectation(description: "Wait for load completion")
