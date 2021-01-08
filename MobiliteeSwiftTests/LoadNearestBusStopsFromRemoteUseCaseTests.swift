@@ -72,18 +72,9 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         let (sut, client) = makeSUT()
         let clientError = NSError(domain: "a client error", code: 42)
         
-        let exp = expectation(description: "Wait for load completion")
-        
-        var receivedError: RemoteNearestBusStopsLoader.Error?
-        sut.load() { error in
-            receivedError = error
-            exp.fulfill()
-        }
-        
-        client.completeWithError(clientError)
-        wait(for: [exp], timeout: 1.0)
-        
-        XCTAssertEqual(receivedError, .connectivity)
+        expect(sut, toCompleteWithError: .connectivity, when: {
+            client.completeWithError(clientError)
+        })
     }
     
     func test_load_deliversErrorOnNon200HTTPResponse() {
@@ -92,18 +83,9 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         let samples = [199, 201, 300, 400, 500].enumerated()
         
         samples.forEach { index, code in
-            let exp = expectation(description: "Wait for load completion")
-
-            var receivedError: RemoteNearestBusStopsLoader.Error?
-            sut.load() { error in
-                receivedError = error
-                exp.fulfill()
-            }
-
-            client.completeSuccessfully(withStatusCode: code, data: Data(), at: index)
-            wait(for: [exp], timeout: 1.0)
-
-            XCTAssertEqual(receivedError, .invalidData)
+            expect(sut, toCompleteWithError: .invalidData, when: {
+                client.completeSuccessfully(withStatusCode: code, data: Data(), at: index)
+            })
         }
     }
     
@@ -123,5 +105,20 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         addTeardownBlock { [weak object] in
             XCTAssertNil(object, "Instance should have been deallocated. Potential memory leak.", file: file, line: line)
         }
+    }
+    
+    private func expect(_ sut: RemoteNearestBusStopsLoader, toCompleteWithError expectedError: RemoteNearestBusStopsLoader.Error?, when action: () -> Void) {
+        let exp = expectation(description: "Wait for load completion")
+
+        var receivedError: RemoteNearestBusStopsLoader.Error?
+        sut.load() { error in
+            receivedError = error
+            exp.fulfill()
+        }
+
+        action()
+        
+        wait(for: [exp], timeout: 1.0)
+        XCTAssertEqual(receivedError, expectedError)
     }
 }
