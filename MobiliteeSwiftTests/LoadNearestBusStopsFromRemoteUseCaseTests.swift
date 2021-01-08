@@ -31,21 +31,23 @@ class RemoteNearestBusStopsLoader {
 }
 
 class HTTPClient {
-    var requestedURLs = [URL]()
-    private var completions = [(Result<(Data, HTTPURLResponse), Error>) -> Void]()
-    
+    private var messages = [(url: URL, completion: (Result<(Data, HTTPURLResponse), Error>) -> Void)]()
+
+    var requestedURLs: [URL] {
+        return messages.map { $0.url }
+    }
+
     func get(from url: URL, completion: @escaping (Result<(Data, HTTPURLResponse), Error>) -> Void) {
-        requestedURLs.append(url)
-        completions.append(completion)
+        messages.append((url, completion))
     }
     
     func completeWithError(_ error: Error, at index: Int = 0) {
-        completions[index](.failure(error))
+        messages[index].completion(.failure(error))
     }
     
     func completeSuccessfully(withStatusCode code: Int, data: Data, at index: Int = 0) {
         let response = HTTPURLResponse(url: requestedURLs[index], statusCode: code, httpVersion: nil, headerFields: nil)!
-        completions[index](.success((data, response)))
+        messages[index].completion(.success((data, response)))
     }
 }
 
