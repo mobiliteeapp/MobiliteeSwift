@@ -38,7 +38,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         
         samples.forEach { index, code in
             expect(sut, toCompleteWith: .failure(.invalidData), when: {
-                client.completeSuccessfully(withStatusCode: code, data: emptyJSON(), at: index)
+                client.completeSuccessfully(withStatusCode: code, data: jsonWithSuccessCode(), at: index)
             })
         }
     }
@@ -52,10 +52,10 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         })
     }
     
-    func test_load_deliversErrorOn200HTTPResponseWithNonCode00() {
+    func test_load_deliversErrorOn200HTTPResponseWithNonSuccessCode() {
         let (sut, client) = makeSUT()
 
-        let samples = ["01", "", " "].enumerated()
+        let samples = ["", " ", "AZ"].enumerated()
         
         samples.forEach { index, code in
             expect(sut, toCompleteWith: .failure(.invalidData), when: {
@@ -64,11 +64,11 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         }
     }
     
-    func test_load_deliversErrorOn200HTTPResponseAndSessionExpiredCode() {
+    func test_load_deliversErrorOn200HTTPResponseWithSessionExpiredCode() {
         let (sut, client) = makeSUT()
 
         expect(sut, toCompleteWith: .failure(.sessionExpired), when: {
-            client.completeSuccessfully(withStatusCode: 200, data: validJSON(withCode: "80"))
+            client.completeSuccessfully(withStatusCode: 200, data: jsonWithSessionExpiredCode())
         })
     }
     
@@ -94,6 +94,14 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
     
     private func emptyJSON() -> Data {
         return validJSON(withCode: "00")
+    }
+    
+    private func jsonWithSuccessCode() -> Data {
+        return validJSON(withCode: "00")
+    }
+    
+    private func jsonWithSessionExpiredCode() -> Data {
+        return validJSON(withCode: "80")
     }
     
     private func validJSON(withCode code: String) -> Data {
