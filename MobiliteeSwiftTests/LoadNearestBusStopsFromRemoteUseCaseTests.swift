@@ -69,13 +69,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
             exp.fulfill()
         }
 
-        let emptyJSON: [String: Any] = [
-            "code": "01",
-            "data": []
-        ]
-        let data = try! JSONSerialization.data(withJSONObject: emptyJSON)
-
-        client.completeSuccessfully(withStatusCode: 200, data: data)
+        client.completeSuccessfully(withStatusCode: 200, data: emptyJSON(withCode: "01"))
 
         wait(for: [exp], timeout: 1.0)
     }
@@ -97,13 +91,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
             exp.fulfill()
         }
 
-        let emptyJSON: [String: Any] = [
-            "code": "00",
-            "data": []
-        ]
-        let data = try! JSONSerialization.data(withJSONObject: emptyJSON)
-
-        client.completeSuccessfully(withStatusCode: 200, data: data)
+        client.completeSuccessfully(withStatusCode: 200, data: emptyJSON(withCode: "00"))
 
         wait(for: [exp], timeout: 1.0)
     }
@@ -118,6 +106,14 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         trackForMemoryLeaks(client, file: file, line: line)
         
         return (sut, client)
+    }
+    
+    private func emptyJSON(withCode code: String) -> Data {
+        let emptyJSON: [String: Any] = [
+            "code": code,
+            "data": []
+        ]
+        return try! JSONSerialization.data(withJSONObject: emptyJSON)
     }
     
     private func trackForMemoryLeaks(_ object: AnyObject, file: StaticString = #filePath, line: UInt = #line) {
