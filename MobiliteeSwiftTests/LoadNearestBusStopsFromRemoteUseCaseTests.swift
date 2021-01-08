@@ -10,6 +10,7 @@ class RemoteNearestBusStopsLoader {
     
     enum Error: Swift.Error {
         case connectivity
+        case invalidData
     }
     
     init(url: URL, client: HTTPClient) {
@@ -18,23 +19,33 @@ class RemoteNearestBusStopsLoader {
     }
     
     func load(completion: @escaping (Error?) -> Void) {
-        client.get(from: url) { _ in
-            completion(.connectivity)
+        client.get(from: url) { response in
+            switch response {
+            case .success:
+                completion(.invalidData)
+            case .failure:
+                completion(.connectivity)
+            }
         }
     }
 }
 
 class HTTPClient {
     var requestedURLs = [URL]()
-    private var completions = [(Error?) -> Void]()
+    private var completions = [(Result<(Data, HTTPURLResponse), Error>) -> Void]()
     
-    func get(from url: URL, completion: @escaping (Error?) -> Void) {
+    func get(from url: URL, completion: @escaping (Result<(Data, HTTPURLResponse), Error>) -> Void) {
         requestedURLs.append(url)
         completions.append(completion)
     }
     
     func completeWithError(_ error: Error, at index: Int = 0) {
-        completions[index](error)
+        completions[index](.failure(error))
+    }
+    
+    func completeSuccessfully(withStatusCode code: Int, data: Data, at index: Int = 0) {
+        let response = HTTPURLResponse(url: requestedURLs[index], statusCode: code, httpVersion: nil, headerFields: nil)!
+        completions[index](.success((data, response)))
     }
 }
 
@@ -71,6 +82,23 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
         
         XCTAssertEqual(receivedError, .connectivity)
+    }
+    
+    func test_load_deliversErrorOnNon200HTTPResponse() {
+        let (sut, client) = makeSUT()
+
+        let exp = expectation(description: "Wait for load completion")
+
+        var receivedError: RemoteNearestBusStopsLoader.Error?
+        sut.load() { error in
+            receivedError = error
+            exp.fulfill()
+        }
+
+        client.completeSuccessfully(withStatusCode: 400, data: Data())
+        wait(for: [exp], timeout: 1.0)
+
+        XCTAssertEqual(receivedError, .invalidData)
     }
     
     // MARK: - Helpers
