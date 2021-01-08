@@ -10,6 +10,7 @@
 		CA98BF0A25A870D7006F701E /* NearestBusStopsLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA98BF0925A870D7006F701E /* NearestBusStopsLoader.swift */; };
 		CA98BF0E25A87317006F701E /* NearestBusStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA98BF0D25A87317006F701E /* NearestBusStop.swift */; };
 		CA98BF1225A873EE006F701E /* LoadNearestBusStopsFromRemoteUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA98BF1125A873EE006F701E /* LoadNearestBusStopsFromRemoteUseCaseTests.swift */; };
+		CA98BF1725A88C15006F701E /* RemoteNearestBusStopsLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA98BF1625A88C15006F701E /* RemoteNearestBusStopsLoader.swift */; };
 		CA9B738925A7343E00BE1D56 /* MobiliteeSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA9B737F25A7343E00BE1D56 /* MobiliteeSwift.framework */; };
 /* End PBXBuildFile section */
 
@@ -27,6 +28,7 @@
 		CA98BF0925A870D7006F701E /* NearestBusStopsLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearestBusStopsLoader.swift; sourceTree = "<group>"; };
 		CA98BF0D25A87317006F701E /* NearestBusStop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearestBusStop.swift; sourceTree = "<group>"; };
 		CA98BF1125A873EE006F701E /* LoadNearestBusStopsFromRemoteUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadNearestBusStopsFromRemoteUseCaseTests.swift; sourceTree = "<group>"; };
+		CA98BF1625A88C15006F701E /* RemoteNearestBusStopsLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteNearestBusStopsLoader.swift; sourceTree = "<group>"; };
 		CA9B737F25A7343E00BE1D56 /* MobiliteeSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MobiliteeSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA9B738325A7343E00BE1D56 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CA9B738825A7343E00BE1D56 /* MobiliteeSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobiliteeSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -61,6 +63,14 @@
 			path = "Nearest Bus Stops Feature";
 			sourceTree = "<group>";
 		};
+		CA98BF1525A88BF1006F701E /* Nearest Bus Stops API */ = {
+			isa = PBXGroup;
+			children = (
+				CA98BF1625A88C15006F701E /* RemoteNearestBusStopsLoader.swift */,
+			);
+			path = "Nearest Bus Stops API";
+			sourceTree = "<group>";
+		};
 		CA9B737525A7343D00BE1D56 = {
 			isa = PBXGroup;
 			children = (
@@ -82,6 +92,7 @@
 		CA9B738125A7343E00BE1D56 /* MobiliteeSwift */ = {
 			isa = PBXGroup;
 			children = (
+				CA98BF1525A88BF1006F701E /* Nearest Bus Stops API */,
 				CA98BF0225A87040006F701E /* Nearest Bus Stops Feature */,
 				CA9B738325A7343E00BE1D56 /* Info.plist */,
 			);
@@ -208,6 +219,7 @@
 			files = (
 				CA98BF0A25A870D7006F701E /* NearestBusStopsLoader.swift in Sources */,
 				CA98BF0E25A87317006F701E /* NearestBusStop.swift in Sources */,
+				CA98BF1725A88C15006F701E /* RemoteNearestBusStopsLoader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
