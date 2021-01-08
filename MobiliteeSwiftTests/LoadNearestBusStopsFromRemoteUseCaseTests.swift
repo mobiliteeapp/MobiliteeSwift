@@ -3,6 +3,7 @@
 //
 
 import XCTest
+import MobiliteeSwift
 
 class RemoteNearestBusStopsLoader {
     private let url: URL
@@ -18,13 +19,13 @@ class RemoteNearestBusStopsLoader {
         self.client = client
     }
     
-    func load(completion: @escaping (Error?) -> Void) {
+    func load(completion: @escaping (Result<[NearestBusStop], Error>) -> Void) {
         client.get(from: url) { response in
             switch response {
             case .success:
-                completion(.invalidData)
+                completion(.failure(.invalidData))
             case .failure:
-                completion(.connectivity)
+                completion(.failure(.connectivity))
             }
         }
     }
@@ -98,6 +99,34 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         })
     }
     
+//    func test_load_deliversEmptyResultOn200HTTPResponseWithEmptyJSON() {
+//        let (sut, client) = makeSUT()
+//
+//        let exp = expectation(description: "Wait for load completion")
+//
+//        sut.load() { result in
+//            switch result {
+//            case let .success(busStops):
+//                XCTAssertEqual(busStops, [])
+//
+//            case .failure:
+//                XCTFail("Expected successful result, got failure instead")
+//            }
+//
+//            exp.fulfill()
+//        }
+//
+//        let emptyJSON: [String: Any] = [
+//            "code": "00",
+//            "data": []
+//        ]
+//        let data = try! JSONSerialization.data(withJSONObject: emptyJSON)
+//
+//        client.completeSuccessfully(withStatusCode: 200, data: data)
+//
+//        wait(for: [exp], timeout: 1.0)
+//    }
+    
     // MARK: - Helpers
     
     private func makeSUT(url: URL = URL(string: "https://any-url.com")!, file: StaticString = #filePath, line: UInt = #line) -> (sut: RemoteNearestBusStopsLoader, client: HTTPClient) {
@@ -116,18 +145,23 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         }
     }
     
-    private func expect(_ sut: RemoteNearestBusStopsLoader, toCompleteWithError expectedError: RemoteNearestBusStopsLoader.Error?, when action: () -> Void) {
+    private func expect(_ sut: RemoteNearestBusStopsLoader, toCompleteWithError expectedError: RemoteNearestBusStopsLoader.Error, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
         let exp = expectation(description: "Wait for load completion")
 
-        var receivedError: RemoteNearestBusStopsLoader.Error?
-        sut.load() { error in
-            receivedError = error
+        sut.load() { result in
+            switch result {
+            case let .failure(receivedError):
+                XCTAssertEqual(receivedError, expectedError, file: file, line: line)
+                
+            case .success:
+                XCTFail("Expected failure with error \(expectedError), got success result instead", file: file, line: line)
+            }
+
             exp.fulfill()
         }
 
         action()
         
         wait(for: [exp], timeout: 1.0)
-        XCTAssertEqual(receivedError, expectedError)
     }
 }
