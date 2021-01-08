@@ -64,7 +64,15 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         }
     }
     
-    func test_load_deliversEmptyResultOn200HTTPResponseWithEmptyJSONAndCode00() {
+    func test_load_deliversErrorOn200HTTPResponseAndSessionExpiredCode() {
+        let (sut, client) = makeSUT()
+
+        expect(sut, toCompleteWith: .failure(.sessionExpired), when: {
+            client.completeSuccessfully(withStatusCode: 200, data: validJSON(withCode: "80"))
+        })
+    }
+    
+    func test_load_deliversEmptyResultOn200HTTPResponseWithEmptyJSON() {
         let (sut, client) = makeSUT()
         
         expect(sut, toCompleteWith: .success([]), when: {
