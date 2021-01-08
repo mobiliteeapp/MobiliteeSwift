@@ -24,11 +24,15 @@ public class RemoteNearestBusStopsLoader {
         self.client = client
     }
     
+    private static var OK_200: Int { return 200 }
+    
+    private static var CODE_00: String { return "00" }
+    
     public func load(completion: @escaping (LoadResult) -> Void) {
         client.get(from: url) { response in
             switch response {
             case let .success((data, response)):
-                if let root = try? JSONDecoder().decode(Root.self, from: data), root.code == "00", response.statusCode == 200 {
+                if let root = try? JSONDecoder().decode(Root.self, from: data), root.code == RemoteNearestBusStopsLoader.CODE_00, response.statusCode == RemoteNearestBusStopsLoader.OK_200 {
                     completion(.success([]))
                 } else {
                     completion(.failure(.invalidData))
