@@ -89,6 +89,15 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         }
     }
     
+    func test_load_deliversErrorOn200HTTPResponseWithInvalidJSON() {
+        let (sut, client) = makeSUT()
+        
+        expect(sut, toCompleteWithError: .invalidData, when: {
+            let invalidJSON = "invalid JSON".data(using: .utf8)!
+            client.completeSuccessfully(withStatusCode: 200, data: invalidJSON)
+        })
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(url: URL = URL(string: "https://any-url.com")!, file: StaticString = #filePath, line: UInt = #line) -> (sut: RemoteNearestBusStopsLoader, client: HTTPClient) {
