@@ -17,12 +17,14 @@ public class RemoteNearestBusStopsLoader {
         case invalidData
     }
     
+    public typealias LoadResult = Result<[NearestBusStop], Error>
+    
     public init(url: URL, client: HTTPClient) {
         self.url = url
         self.client = client
     }
     
-    public func load(completion: @escaping (Result<[NearestBusStop], Error>) -> Void) {
+    public func load(completion: @escaping (LoadResult) -> Void) {
         client.get(from: url) { response in
             switch response {
             case let .success((data, response)):

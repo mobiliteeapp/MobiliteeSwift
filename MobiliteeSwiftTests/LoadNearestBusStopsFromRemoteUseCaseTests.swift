@@ -26,7 +26,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         let (sut, client) = makeSUT()
         let clientError = NSError(domain: "a client error", code: 42)
         
-        expect(sut, toCompleteWithError: .connectivity, when: {
+        expect(sut, toCompleteWith: .failure(.connectivity), when: {
             client.completeWithError(clientError)
         })
     }
@@ -37,7 +37,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         let samples = [199, 201, 300, 400, 500].enumerated()
         
         samples.forEach { index, code in
-            expect(sut, toCompleteWithError: .invalidData, when: {
+            expect(sut, toCompleteWith: .failure(.invalidData), when: {
                 client.completeSuccessfully(withStatusCode: code, data: Data(), at: index)
             })
         }
@@ -46,7 +46,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
     func test_load_deliversErrorOn200HTTPResponseWithInvalidJSON() {
         let (sut, client) = makeSUT()
         
-        expect(sut, toCompleteWithError: .invalidData, when: {
+        expect(sut, toCompleteWith: .failure(.invalidData), when: {
             let invalidJSON = "invalid JSON".data(using: .utf8)!
             client.completeSuccessfully(withStatusCode: 200, data: invalidJSON)
         })
@@ -55,45 +55,17 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
     func test_load_deliversErrorOn200HTTPResponseWithNonCode00() {
         let (sut, client) = makeSUT()
 
-        let exp = expectation(description: "Wait for load completion")
-
-        sut.load() { result in
-            switch result {
-            case let .failure(receivedError):
-                XCTAssertEqual(receivedError, .invalidData)
-
-            case .success:
-                XCTFail("Expected failure, got success instead")
-            }
-
-            exp.fulfill()
-        }
-
-        client.completeSuccessfully(withStatusCode: 200, data: emptyJSON(withCode: "01"))
-
-        wait(for: [exp], timeout: 1.0)
+        expect(sut, toCompleteWith: .failure(.invalidData), when: {
+            client.completeSuccessfully(withStatusCode: 200, data: emptyJSON(withCode: "01"))
+        })
     }
     
     func test_load_deliversEmptyResultOn200HTTPResponseWithEmptyJSONAndCode00() {
         let (sut, client) = makeSUT()
-
-        let exp = expectation(description: "Wait for load completion")
-
-        sut.load() { result in
-            switch result {
-            case let .success(busStops):
-                XCTAssertEqual(busStops, [])
-
-            case .failure:
-                XCTFail("Expected successful empty result, got failure instead")
-            }
-
-            exp.fulfill()
-        }
-
-        client.completeSuccessfully(withStatusCode: 200, data: emptyJSON(withCode: "00"))
-
-        wait(for: [exp], timeout: 1.0)
+        
+        expect(sut, toCompleteWith: .success([]), when: {
+            client.completeSuccessfully(withStatusCode: 200, data: emptyJSON(withCode: "00"))
+        })
     }
     
     // MARK: - Helpers
@@ -122,18 +94,11 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         }
     }
     
-    private func expect(_ sut: RemoteNearestBusStopsLoader, toCompleteWithError expectedError: RemoteNearestBusStopsLoader.Error, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
+    private func expect(_ sut: RemoteNearestBusStopsLoader, toCompleteWith expectedResult: RemoteNearestBusStopsLoader.LoadResult, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
         let exp = expectation(description: "Wait for load completion")
 
-        sut.load() { result in
-            switch result {
-            case let .failure(receivedError):
-                XCTAssertEqual(receivedError, expectedError, file: file, line: line)
-                
-            case .success:
-                XCTFail("Expected failure with error \(expectedError), got success result instead", file: file, line: line)
-            }
-
+        sut.load() { receivedResult in
+            XCTAssertEqual(receivedResult, expectedResult, file: file, line: line)
             exp.fulfill()
         }
 
