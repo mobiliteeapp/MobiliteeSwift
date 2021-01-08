@@ -8,13 +8,19 @@ class RemoteNearestBusStopsLoader {
     private let url: URL
     private let client: HTTPClient
     
+    enum Error: Swift.Error {
+        case connectivity
+    }
+    
     init(url: URL, client: HTTPClient) {
         self.url = url
         self.client = client
     }
     
     func load(completion: @escaping (Error?) -> Void) {
-        client.get(from: url, completion: completion)
+        client.get(from: url) { _ in
+            completion(.connectivity)
+        }
     }
 }
 
@@ -55,7 +61,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         
         let exp = expectation(description: "Wait for load completion")
         
-        var receivedError: Error?
+        var receivedError: RemoteNearestBusStopsLoader.Error?
         sut.load() { error in
             receivedError = error
             exp.fulfill()
@@ -64,15 +70,24 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         client.completeWithError(clientError)
         wait(for: [exp], timeout: 1.0)
         
-        XCTAssertNotNil(receivedError)
+        XCTAssertEqual(receivedError, .connectivity)
     }
     
     // MARK: - Helpers
     
-    private func makeSUT(url: URL = URL(string: "https://any-url.com")!) -> (sut: RemoteNearestBusStopsLoader, client: HTTPClient) {
+    private func makeSUT(url: URL = URL(string: "https://any-url.com")!, file: StaticString = #filePath, line: UInt = #line) -> (sut: RemoteNearestBusStopsLoader, client: HTTPClient) {
         let client = HTTPClient()
         let sut = RemoteNearestBusStopsLoader(url: url, client: client)
         
+        trackForMemoryLeaks(sut, file: file, line: line)
+        trackForMemoryLeaks(client, file: file, line: line)
+        
         return (sut, client)
+    }
+    
+    private func trackForMemoryLeaks(_ object: AnyObject, file: StaticString = #filePath, line: UInt = #line) {
+        addTeardownBlock { [weak object] in
+            XCTAssertNil(object, "Instance should have been deallocated. Potential memory leak.", file: file, line: line)
+        }
     }
 }
