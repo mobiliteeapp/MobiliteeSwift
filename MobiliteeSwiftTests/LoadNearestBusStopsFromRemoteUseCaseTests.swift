@@ -38,7 +38,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         
         samples.forEach { index, code in
             expect(sut, toCompleteWith: .failure(.invalidData), when: {
-                client.completeSuccessfully(withStatusCode: code, data: Data(), at: index)
+                client.completeSuccessfully(withStatusCode: code, data: emptyJSON(), at: index)
             })
         }
     }
@@ -84,7 +84,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         return (sut, client)
     }
     
-    private func emptyJSON(withCode code: String) -> Data {
+    private func emptyJSON(withCode code: String = "00") -> Data {
         let emptyJSON: [String: Any] = [
             "code": code,
             "data": []
