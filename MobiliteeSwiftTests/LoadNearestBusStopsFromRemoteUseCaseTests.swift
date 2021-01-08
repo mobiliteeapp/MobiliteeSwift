@@ -52,6 +52,34 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         })
     }
     
+    func test_load_deliversErrorOn200HTTPResponseWithNonCode00() {
+        let (sut, client) = makeSUT()
+
+        let exp = expectation(description: "Wait for load completion")
+
+        sut.load() { result in
+            switch result {
+            case let .failure(receivedError):
+                XCTAssertEqual(receivedError, .invalidData)
+
+            case .success:
+                XCTFail("Expected failure, got success instead")
+            }
+
+            exp.fulfill()
+        }
+
+        let emptyJSON: [String: Any] = [
+            "code": "01",
+            "data": []
+        ]
+        let data = try! JSONSerialization.data(withJSONObject: emptyJSON)
+
+        client.completeSuccessfully(withStatusCode: 200, data: data)
+
+        wait(for: [exp], timeout: 1.0)
+    }
+    
     func test_load_deliversEmptyResultOn200HTTPResponseWithEmptyJSONAndCode00() {
         let (sut, client) = makeSUT()
 

@@ -4,6 +4,10 @@
 
 import Foundation
 
+public protocol HTTPClient {
+    func get(from url: URL, completion: @escaping (Result<(Data, HTTPURLResponse), Error>) -> Void)
+}
+
 public class RemoteNearestBusStopsLoader {
     private let url: URL
     private let client: HTTPClient
@@ -22,7 +26,7 @@ public class RemoteNearestBusStopsLoader {
         client.get(from: url) { response in
             switch response {
             case let .success((data, response)):
-                if let _ = try? JSONSerialization.jsonObject(with: data), response.statusCode == 200 {
+                if let root = try? JSONDecoder().decode(Root.self, from: data), root.code == "00", response.statusCode == 200 {
                     completion(.success([]))
                 } else {
                     completion(.failure(.invalidData))
@@ -34,6 +38,10 @@ public class RemoteNearestBusStopsLoader {
     }
 }
 
-public protocol HTTPClient {
-    func get(from url: URL, completion: @escaping (Result<(Data, HTTPURLResponse), Error>) -> Void)
+private struct Root: Decodable {
+    let code: String
+    let data: [Stop]
+}
+
+private struct Stop: Decodable {
 }
