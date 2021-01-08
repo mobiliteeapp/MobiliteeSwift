@@ -13,16 +13,22 @@ class RemoteNearestBusStopsLoader {
         self.client = client
     }
     
-    func load() {
-        client.get(from: url)
+    func load(completion: @escaping (Error?) -> Void) {
+        client.get(from: url, completion: completion)
     }
 }
 
 class HTTPClient {
     var requestedURLs = [URL]()
+    private var completions = [(Error?) -> Void]()
     
-    func get(from url: URL) {
+    func get(from url: URL, completion: @escaping (Error?) -> Void) {
         requestedURLs.append(url)
+        completions.append(completion)
+    }
+    
+    func completeWithError(_ error: Error, at index: Int = 0) {
+        completions[index](error)
     }
 }
 
@@ -38,9 +44,27 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         let url = URL(string: "https://any-url.com")!
         let (sut, client) = makeSUT(url: url)
         
-        sut.load()
+        sut.load() { _ in }
         
         XCTAssertEqual(client.requestedURLs, [url])
+    }
+    
+    func test_load_deliversErrorOnClientError() {
+        let (sut, client) = makeSUT()
+        let clientError = NSError(domain: "a client error", code: 42)
+        
+        let exp = expectation(description: "Wait for load completion")
+        
+        var receivedError: Error?
+        sut.load() { error in
+            receivedError = error
+            exp.fulfill()
+        }
+        
+        client.completeWithError(clientError)
+        wait(for: [exp], timeout: 1.0)
+        
+        XCTAssertNotNil(receivedError)
     }
     
     // MARK: - Helpers
