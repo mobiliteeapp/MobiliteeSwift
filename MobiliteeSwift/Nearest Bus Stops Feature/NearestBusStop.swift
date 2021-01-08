@@ -4,7 +4,7 @@
 
 import Foundation
 
-public struct NearestBusStop {
+public struct NearestBusStop: Equatable {
     public let id: Int
     public let latitude: Double
     public let longitude: Double
@@ -14,7 +14,7 @@ public struct NearestBusStop {
     public let lines: [NearestBusStopLine]
 }
 
-public struct NearestBusStopLine {
+public struct NearestBusStopLine: Equatable {
     public let id: Int
     public let origin: String
     public let destination: String

@@ -22,8 +22,12 @@ class RemoteNearestBusStopsLoader {
     func load(completion: @escaping (Result<[NearestBusStop], Error>) -> Void) {
         client.get(from: url) { response in
             switch response {
-            case .success:
-                completion(.failure(.invalidData))
+            case let .success((data, response)):
+                if let _ = try? JSONSerialization.jsonObject(with: data), response.statusCode == 200 {
+                    completion(.success([]))
+                } else {
+                    completion(.failure(.invalidData))
+                }
             case .failure:
                 completion(.failure(.connectivity))
             }
@@ -99,33 +103,33 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         })
     }
     
-//    func test_load_deliversEmptyResultOn200HTTPResponseWithEmptyJSON() {
-//        let (sut, client) = makeSUT()
-//
-//        let exp = expectation(description: "Wait for load completion")
-//
-//        sut.load() { result in
-//            switch result {
-//            case let .success(busStops):
-//                XCTAssertEqual(busStops, [])
-//
-//            case .failure:
-//                XCTFail("Expected successful result, got failure instead")
-//            }
-//
-//            exp.fulfill()
-//        }
-//
-//        let emptyJSON: [String: Any] = [
-//            "code": "00",
-//            "data": []
-//        ]
-//        let data = try! JSONSerialization.data(withJSONObject: emptyJSON)
-//
-//        client.completeSuccessfully(withStatusCode: 200, data: data)
-//
-//        wait(for: [exp], timeout: 1.0)
-//    }
+    func test_load_deliversEmptyResultOn200HTTPResponseWithEmptyJSON() {
+        let (sut, client) = makeSUT()
+
+        let exp = expectation(description: "Wait for load completion")
+
+        sut.load() { result in
+            switch result {
+            case let .success(busStops):
+                XCTAssertEqual(busStops, [])
+
+            case .failure:
+                XCTFail("Expected successful empty result, got failure instead")
+            }
+
+            exp.fulfill()
+        }
+
+        let emptyJSON: [String: Any] = [
+            "code": "00",
+            "data": []
+        ]
+        let data = try! JSONSerialization.data(withJSONObject: emptyJSON)
+
+        client.completeSuccessfully(withStatusCode: 200, data: data)
+
+        wait(for: [exp], timeout: 1.0)
+    }
     
     // MARK: - Helpers
     
