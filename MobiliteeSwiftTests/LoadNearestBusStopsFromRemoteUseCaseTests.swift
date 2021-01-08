@@ -55,9 +55,13 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
     func test_load_deliversErrorOn200HTTPResponseWithNonCode00() {
         let (sut, client) = makeSUT()
 
-        expect(sut, toCompleteWith: .failure(.invalidData), when: {
-            client.completeSuccessfully(withStatusCode: 200, data: emptyJSON(withCode: "01"))
-        })
+        let samples = ["01", "", " "].enumerated()
+        
+        samples.forEach { index, code in
+            expect(sut, toCompleteWith: .failure(.invalidData), when: {
+                client.completeSuccessfully(withStatusCode: 200, data: emptyJSON(withCode: code), at: index)
+            })
+        }
     }
     
     func test_load_deliversEmptyResultOn200HTTPResponseWithEmptyJSONAndCode00() {
