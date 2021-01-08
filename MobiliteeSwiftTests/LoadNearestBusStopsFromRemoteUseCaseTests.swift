@@ -89,18 +89,22 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
     func test_load_deliversErrorOnNon200HTTPResponse() {
         let (sut, client) = makeSUT()
 
-        let exp = expectation(description: "Wait for load completion")
+        let samples = [199, 201, 300, 400, 500].enumerated()
+        
+        samples.forEach { index, code in
+            let exp = expectation(description: "Wait for load completion")
 
-        var receivedError: RemoteNearestBusStopsLoader.Error?
-        sut.load() { error in
-            receivedError = error
-            exp.fulfill()
+            var receivedError: RemoteNearestBusStopsLoader.Error?
+            sut.load() { error in
+                receivedError = error
+                exp.fulfill()
+            }
+
+            client.completeSuccessfully(withStatusCode: code, data: Data(), at: index)
+            wait(for: [exp], timeout: 1.0)
+
+            XCTAssertEqual(receivedError, .invalidData)
         }
-
-        client.completeSuccessfully(withStatusCode: 400, data: Data())
-        wait(for: [exp], timeout: 1.0)
-
-        XCTAssertEqual(receivedError, .invalidData)
     }
     
     // MARK: - Helpers
