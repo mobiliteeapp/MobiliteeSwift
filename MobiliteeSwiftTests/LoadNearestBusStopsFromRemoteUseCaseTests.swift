@@ -29,21 +29,26 @@ class HTTPClient {
 class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
     
     func test_init_doesNotRequestDataFromURL() {
-        let url = URL(string: "https://any-url.com")!
-        let client = HTTPClient()
-        
-        _ = RemoteNearestBusStopsLoader(url: url, client: client)
+        let (_, client) = makeSUT()
         
         XCTAssertTrue(client.requestedURLs.isEmpty)
     }
     
     func test_load_requestsDataFromURL() {
         let url = URL(string: "https://any-url.com")!
-        let client = HTTPClient()
-        let sut = RemoteNearestBusStopsLoader(url: url, client: client)
+        let (sut, client) = makeSUT(url: url)
         
         sut.load()
         
         XCTAssertEqual(client.requestedURLs, [url])
+    }
+    
+    // MARK: - Helpers
+    
+    private func makeSUT(url: URL = URL(string: "https://any-url.com")!) -> (sut: RemoteNearestBusStopsLoader, client: HTTPClient) {
+        let client = HTTPClient()
+        let sut = RemoteNearestBusStopsLoader(url: url, client: client)
+        
+        return (sut, client)
     }
 }
