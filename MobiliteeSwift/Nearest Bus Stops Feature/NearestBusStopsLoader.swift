@@ -4,6 +4,8 @@
 
 import Foundation
 
+public typealias LoadNearestBusStopsResult = Result<[NearestBusStop], Error>
+
 public protocol NearestBusStopsLoader {
-    func load(latitude: Double, longitude: Double, radius: Int, completion: (Result<[NearestBusStop], Error>))
+    func load(latitude: Double, longitude: Double, radius: Int, completion: (LoadNearestBusStopsResult))
 }
