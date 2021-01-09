@@ -52,7 +52,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         })
     }
     
-    func test_load_deliversErrorOn200HTTPResponseWithNonSuccessCode() {
+    func test_load_deliversInvalidDataErrorOn200HTTPResponseWithAnyUnknownCode() {
         let (sut, client) = makeSUT()
 
         let samples = ["", " ", "AZ"].enumerated()
@@ -64,7 +64,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         }
     }
     
-    func test_load_deliversErrorOn200HTTPResponseWithSessionExpiredCode() {
+    func test_load_deliversSessionExpiredErrorOn200HTTPResponseWithSessionExpiredCode() {
         let (sut, client) = makeSUT()
 
         expect(sut, toCompleteWith: .failure(.sessionExpired), when: {
@@ -72,7 +72,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         })
     }
     
-    func test_load_deliversEmptyResultOn200HTTPResponseWithEmptyJSON() {
+    func test_load_deliversNoBusStopsOn200HTTPResponseWithSuccessCodeAndEmptyJSON() {
         let (sut, client) = makeSUT()
         
         expect(sut, toCompleteWith: .success([]), when: {
