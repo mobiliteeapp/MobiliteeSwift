@@ -25,26 +25,17 @@ public class RemoteNearestBusStopsLoader {
         self.client = client
     }
     
-    private static var OK_200: Int { return 200 }
-    
-    private static var successCode: String { return "00" }
-    private static var sessionExpiredCode: String { return "80" }
-
     public func load(completion: @escaping (LoadResult) -> Void) {
         client.get(from: url) { response in
             switch response {
             case let .success((data, response)):
-                if let root = try? JSONDecoder().decode(Root.self, from: data), response.statusCode == RemoteNearestBusStopsLoader.OK_200 {
-                    if root.code == RemoteNearestBusStopsLoader.successCode {
-                        completion(.success([]))
-                    } else if root.code == RemoteNearestBusStopsLoader.sessionExpiredCode {
-                        completion(.failure(.sessionExpired))
-                    } else {
-                        completion(.failure(.invalidData))
+                do {
+                    let busStops = try NearestBusStopsMapper.map(data, with: response)
+                    completion(.success(busStops))
+                } catch {
+                    if let error = error as? RemoteNearestBusStopsLoader.Error {
+                        completion(.failure(error))
                     }
-                    
-                } else {
-                    completion(.failure(.invalidData))
                 }
                 
             case .failure:
@@ -54,10 +45,33 @@ public class RemoteNearestBusStopsLoader {
     }
 }
 
-private struct Root: Decodable {
-    let code: String
-    let data: [Stop]
-}
+private final class NearestBusStopsMapper {
+    private struct Root: Decodable {
+        let code: String
+        let data: [Stop]
+    }
 
-private struct Stop: Decodable {
+    private struct Stop: Decodable {
+    }
+        
+    private static var OK_200: Int { return 200 }
+
+    private static var successCode: String { return "00" }
+    private static var sessionExpiredCode: String { return "80" }
+
+    static func map(_ data: Data, with response: HTTPURLResponse) throws -> [NearestBusStop] {
+        guard response.statusCode == OK_200, let root = try? JSONDecoder().decode(Root.self, from: data) else {
+            throw RemoteNearestBusStopsLoader.Error.invalidData
+        }
+        
+        if root.code == NearestBusStopsMapper.successCode {
+            return []
+            
+        } else if root.code == NearestBusStopsMapper.sessionExpiredCode {
+            throw RemoteNearestBusStopsLoader.Error.sessionExpired
+            
+        } else {
+            throw RemoteNearestBusStopsLoader.Error.invalidData
+        }
+    }
 }
