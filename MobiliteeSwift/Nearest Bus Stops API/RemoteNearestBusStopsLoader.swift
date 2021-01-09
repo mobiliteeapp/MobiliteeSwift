@@ -18,7 +18,7 @@ public class RemoteNearestBusStopsLoader {
         case sessionExpired
     }
     
-    public typealias LoadResult = Result<[NearestBusStop], Error>
+    public typealias LoadResult = Result<[NearestBusStop], Swift.Error>
     
     public init(url: URL, client: HTTPClient) {
         self.url = url
@@ -29,18 +29,22 @@ public class RemoteNearestBusStopsLoader {
         client.get(from: url) { response in
             switch response {
             case let .success((data, response)):
-                do {
-                    let busStops = try NearestBusStopsMapper.map(data, with: response)
-                    completion(.success(busStops))
-                } catch {
-                    if let error = error as? RemoteNearestBusStopsLoader.Error {
-                        completion(.failure(error))
-                    }
-                }
+                completion(RemoteNearestBusStopsLoader.map(data, with: response))
                 
             case .failure:
-                completion(.failure(.connectivity))
+                completion(.failure(Error.connectivity))
             }
+        }
+    }
+    
+    // MARK: - Helpers
+    
+    private static func map(_ data: Data, with response: HTTPURLResponse) -> LoadResult {
+        do {
+            let busStops = try NearestBusStopsMapper.map(data, with: response)
+            return .success(busStops)
+        } catch {
+            return .failure(error)
         }
     }
 }
