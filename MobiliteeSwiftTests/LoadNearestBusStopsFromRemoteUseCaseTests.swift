@@ -86,17 +86,9 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         let stop1 = makeBusStop(id: 1)
         let stop2 = makeBusStop(id: 2)
 
-        let busStops = [stop1.model, stop2.model]
-        let busStopsJSON: [String: Any] = [
-            "code": "00",
-            "data": [
-                stop1.json, stop2.json
-            ]
-        ]
-        
-        expect(sut, toCompleteWith: .success(busStops), when: {
-            let jsonData = try! JSONSerialization.data(withJSONObject: busStopsJSON)
-            client.complete(withStatusCode: 200, data: jsonData)
+        expect(sut, toCompleteWith: .success([stop1.model, stop2.model]), when: {
+            let json = [stop1.json, stop2.json]
+            client.complete(withStatusCode: 200, data: busStopsJSONData(busStops: json))
         })
     }
     
@@ -171,6 +163,15 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         ]
         
         return (line, lineJSON)
+    }
+    
+    private func busStopsJSONData(busStops: [[String: Any]]) -> Data {
+        let json: [String: Any] = [
+            "code": "00",
+            "data": busStops
+        ]
+
+        return try! JSONSerialization.data(withJSONObject: json)
     }
     
     private func trackForMemoryLeaks(_ object: AnyObject, file: StaticString = #filePath, line: UInt = #line) {
