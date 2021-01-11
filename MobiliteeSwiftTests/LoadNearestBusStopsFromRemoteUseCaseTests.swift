@@ -84,12 +84,13 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         let (sut, client) = makeSUT()
         
         let stop1 = makeBusStop(id: 1)
-        
-        let busStops = [stop1.model]
+        let stop2 = makeBusStop(id: 2)
+
+        let busStops = [stop1.model, stop2.model]
         let busStopsJSON: [String: Any] = [
             "code": "00",
             "data": [
-                stop1.json
+                stop1.json, stop2.json
             ]
         ]
         
