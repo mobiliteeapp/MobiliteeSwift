@@ -13,13 +13,18 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         XCTAssertTrue(client.requestedURLs.isEmpty)
     }
     
-    func test_load_requestsDataFromURL() {
+    func test_load_requestsDataFromURLWithQueryParams() {
         let url = URL(string: "https://any-url.com")!
         let (sut, client) = makeSUT(url: url)
+        let requestParams = RemoteNearestBusStopsLoader.RequestParams(
+            latitude: 1.0,
+            longitude: 2.0,
+            radius: 3)
+        let expectedURL = URL(string: "\(url.absoluteString)/\(requestParams.longitude)/\(requestParams.latitude)/\(requestParams.radius)")!
+
+        sut.load(requestParams: requestParams) { _ in }
         
-        sut.load() { _ in }
-        
-        XCTAssertEqual(client.requestedURLs, [url])
+        XCTAssertEqual(client.requestedURLs, [expectedURL])
     }
     
     func test_load_deliversErrorOnClientError() {
@@ -98,7 +103,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         var sut: RemoteNearestBusStopsLoader? = RemoteNearestBusStopsLoader(url: url, client: client)
         
         var receivedResult: RemoteNearestBusStopsLoader.LoadResult?
-        sut?.load { receivedResult = $0 }
+        sut?.load(requestParams: anyRequestParams()) { receivedResult = $0 }
         
         sut = nil
         client.complete(withStatusCode: 200, data: jsonWithSuccessCode())
@@ -116,6 +121,13 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         trackForMemoryLeaks(client, file: file, line: line)
         
         return (sut, client)
+    }
+    
+    private func anyRequestParams() -> RemoteNearestBusStopsLoader.RequestParams {
+        return RemoteNearestBusStopsLoader.RequestParams(
+            latitude: 1.0,
+            longitude: 1.0,
+            radius: 1)
     }
     
     private func jsonWithSuccessCode() -> Data {
@@ -189,7 +201,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
     private func expect(_ sut: RemoteNearestBusStopsLoader, toCompleteWith expectedResult: RemoteNearestBusStopsLoader.LoadResult, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
         let exp = expectation(description: "Wait for load completion")
 
-        sut.load() { receivedResult in
+        sut.load(requestParams: anyRequestParams()) { receivedResult in
             switch (receivedResult, expectedResult) {
             case let (.success(receivedBusStops), .success(expectedBusStops)):
                 XCTAssertEqual(receivedBusStops, expectedBusStops, "Expected success result with bus stops \(expectedBusStops), got \(receivedBusStops) instead", file: file, line: line)

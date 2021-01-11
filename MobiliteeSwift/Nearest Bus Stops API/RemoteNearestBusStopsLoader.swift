@@ -8,6 +8,18 @@ public class RemoteNearestBusStopsLoader {
     private let url: URL
     private let client: HTTPClient
     
+    public struct RequestParams {
+        public let latitude: Double
+        public let longitude: Double
+        public let radius: Int
+        
+        public init(latitude: Double, longitude: Double, radius: Int) {
+            self.latitude = latitude
+            self.longitude = longitude
+            self.radius = radius
+        }
+    }
+    
     public enum Error: Swift.Error {
         case connectivity
         case invalidData
@@ -21,8 +33,13 @@ public class RemoteNearestBusStopsLoader {
         self.client = client
     }
     
-    public func load(completion: @escaping (LoadResult) -> Void) {
-        client.get(from: url) { [weak self] response in
+    public func load(requestParams: RequestParams, completion: @escaping (LoadResult) -> Void) {
+        let endpointURL = url
+            .appendingPathComponent("\(requestParams.longitude)")
+            .appendingPathComponent("\(requestParams.latitude)")
+            .appendingPathComponent("\(requestParams.radius)")
+
+        client.get(from: endpointURL) { [weak self] response in
             guard self != nil else { return }
             
             switch response {
