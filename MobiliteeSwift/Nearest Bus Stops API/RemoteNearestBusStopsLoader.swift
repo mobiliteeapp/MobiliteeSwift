@@ -34,12 +34,7 @@ public class RemoteNearestBusStopsLoader {
     }
     
     public func load(requestParams: RequestParams, completion: @escaping (LoadResult) -> Void) {
-        let endpointURL = url
-            .appendingPathComponent("\(requestParams.longitude)")
-            .appendingPathComponent("\(requestParams.latitude)")
-            .appendingPathComponent("\(requestParams.radius)")
-
-        client.get(from: endpointURL) { [weak self] response in
+        client.get(from: endpointURL(withParams: requestParams)) { [weak self] response in
             guard self != nil else { return }
             
             switch response {
@@ -53,6 +48,13 @@ public class RemoteNearestBusStopsLoader {
     }
     
     // MARK: - Helpers
+    
+    private func endpointURL(withParams params: RequestParams) -> URL {
+        return url
+            .appendingPathComponent("\(params.longitude)")
+            .appendingPathComponent("\(params.latitude)")
+            .appendingPathComponent("\(params.radius)")
+    }
     
     private static func map(_ data: Data, with response: HTTPURLResponse) -> LoadResult {
         do {
