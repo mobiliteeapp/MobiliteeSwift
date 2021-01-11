@@ -83,55 +83,13 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
     func test_load_deliversBusStopsOn200HTTPResponseWithSuccessCodeAndJSONList() {
         let (sut, client) = makeSUT()
         
-        let line1 = NearestBusStopLine(id: "1", origin: "origin line 1", destination: "destination line 1")
+        let stop1 = makeBusStop(id: 1)
         
-        let line1JSON: [String: Any] = [
-            "line": line1.id,
-            "nameA": line1.origin,
-            "nameB": line1.destination
-        ]
-        
-        let line2 = NearestBusStopLine(id: "2", origin: "origin line 2", destination: "destination line 2")
-        
-        let line2JSON: [String: Any] = [
-            "line": line2.id,
-            "nameA": line2.origin,
-            "nameB": line2.destination
-        ]
-        
-        let stop1Lines = [line1, line2]
-        
-        let stop1 = NearestBusStop(
-            id: 1,
-            latitude: 1,
-            longitude: 1,
-            name: "stop 1",
-            address: "address 1",
-            distance: 1,
-            lines: stop1Lines)
-        
-        let stop1JSON: [String: Any] = [
-            "stopId": stop1.id,
-            "geometry": [
-                "coordinates": [
-                    stop1.longitude,
-                    stop1.latitude
-                ]
-            ],
-            "stopName": stop1.name,
-            "address": stop1.address,
-            "metersToPoint": stop1.distance,
-            "lines": [
-                line1JSON,
-                line2JSON
-            ]
-        ]
-        
-        let busStops = [stop1]
+        let busStops = [stop1.model]
         let busStopsJSON: [String: Any] = [
             "code": "00",
             "data": [
-                stop1JSON
+                stop1.json
             ]
         ]
         
@@ -167,6 +125,51 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
             "data": []
         ]
         return try! JSONSerialization.data(withJSONObject: emptyJSON)
+    }
+    
+    private func makeBusStop(id: Int) -> (model: NearestBusStop, json: [String: Any]) {
+        let line1 = makeBusLine(id: "\(id)1")
+        let line2 = makeBusLine(id: "\(id)2")
+        
+        let stop = NearestBusStop(
+            id: id,
+            latitude: Double(id),
+            longitude: Double(id),
+            name: "stop \(id)",
+            address: "address \(id)",
+            distance: id,
+            lines: [line1.model, line2.model])
+        
+        let stopJSON: [String: Any] = [
+            "stopId": stop.id,
+            "geometry": [
+                "coordinates": [
+                    stop.longitude,
+                    stop.latitude
+                ]
+            ],
+            "stopName": stop.name,
+            "address": stop.address,
+            "metersToPoint": stop.distance,
+            "lines": [line1.json, line2.json]
+        ]
+        
+        return (stop, stopJSON)
+    }
+    
+    private func makeBusLine(id: String) -> (model: NearestBusStopLine, json: [String: Any]) {
+        let line = NearestBusStopLine(
+            id: id,
+            origin: "origin line \(id)",
+            destination: "destination line \(id)")
+        
+        let lineJSON: [String: Any] = [
+            "line": line.id,
+            "nameA": line.origin,
+            "nameB": line.destination
+        ]
+        
+        return (line, lineJSON)
     }
     
     private func trackForMemoryLeaks(_ object: AnyObject, file: StaticString = #filePath, line: UInt = #line) {
