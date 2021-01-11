@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA4224CE25AC7D8C00016C34 /* RemoteNearestBusStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA4224CD25AC7D8C00016C34 /* RemoteNearestBusStop.swift */; };
+		CA4224D225ACB3A800016C34 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA4224D125ACB3A800016C34 /* HTTPClient.swift */; };
+		CA8764BF25AA27160018B51F /* NearestBusStopsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8764BE25AA27160018B51F /* NearestBusStopsMapper.swift */; };
+		CA98BF0A25A870D7006F701E /* NearestBusStopsLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA98BF0925A870D7006F701E /* NearestBusStopsLoader.swift */; };
+		CA98BF0E25A87317006F701E /* NearestBusStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA98BF0D25A87317006F701E /* NearestBusStop.swift */; };
+		CA98BF1225A873EE006F701E /* LoadNearestBusStopsFromRemoteUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA98BF1125A873EE006F701E /* LoadNearestBusStopsFromRemoteUseCaseTests.swift */; };
+		CA98BF1725A88C15006F701E /* RemoteNearestBusStopsLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA98BF1625A88C15006F701E /* RemoteNearestBusStopsLoader.swift */; };
 		CA9B738925A7343E00BE1D56 /* MobiliteeSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA9B737F25A7343E00BE1D56 /* MobiliteeSwift.framework */; };
 /* End PBXBuildFile section */
 
@@ -21,6 +28,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CA4224CD25AC7D8C00016C34 /* RemoteNearestBusStop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteNearestBusStop.swift; sourceTree = "<group>"; };
+		CA4224D125ACB3A800016C34 /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
+		CA8764BE25AA27160018B51F /* NearestBusStopsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearestBusStopsMapper.swift; sourceTree = "<group>"; };
+		CA98BF0925A870D7006F701E /* NearestBusStopsLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearestBusStopsLoader.swift; sourceTree = "<group>"; };
+		CA98BF0D25A87317006F701E /* NearestBusStop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearestBusStop.swift; sourceTree = "<group>"; };
+		CA98BF1125A873EE006F701E /* LoadNearestBusStopsFromRemoteUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadNearestBusStopsFromRemoteUseCaseTests.swift; sourceTree = "<group>"; };
+		CA98BF1625A88C15006F701E /* RemoteNearestBusStopsLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteNearestBusStopsLoader.swift; sourceTree = "<group>"; };
 		CA9B737F25A7343E00BE1D56 /* MobiliteeSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MobiliteeSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA9B738325A7343E00BE1D56 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CA9B738825A7343E00BE1D56 /* MobiliteeSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobiliteeSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -46,6 +60,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CA98BF0225A87040006F701E /* Nearest Bus Stops Feature */ = {
+			isa = PBXGroup;
+			children = (
+				CA98BF0925A870D7006F701E /* NearestBusStopsLoader.swift */,
+				CA98BF0D25A87317006F701E /* NearestBusStop.swift */,
+			);
+			path = "Nearest Bus Stops Feature";
+			sourceTree = "<group>";
+		};
+		CA98BF1525A88BF1006F701E /* Nearest Bus Stops API */ = {
+			isa = PBXGroup;
+			children = (
+				CA98BF1625A88C15006F701E /* RemoteNearestBusStopsLoader.swift */,
+				CA4224D125ACB3A800016C34 /* HTTPClient.swift */,
+				CA8764BE25AA27160018B51F /* NearestBusStopsMapper.swift */,
+				CA4224CD25AC7D8C00016C34 /* RemoteNearestBusStop.swift */,
+			);
+			path = "Nearest Bus Stops API";
+			sourceTree = "<group>";
+		};
 		CA9B737525A7343D00BE1D56 = {
 			isa = PBXGroup;
 			children = (
@@ -67,6 +101,8 @@
 		CA9B738125A7343E00BE1D56 /* MobiliteeSwift */ = {
 			isa = PBXGroup;
 			children = (
+				CA98BF1525A88BF1006F701E /* Nearest Bus Stops API */,
+				CA98BF0225A87040006F701E /* Nearest Bus Stops Feature */,
 				CA9B738325A7343E00BE1D56 /* Info.plist */,
 			);
 			path = MobiliteeSwift;
@@ -76,6 +112,7 @@
 			isa = PBXGroup;
 			children = (
 				CA9B738F25A7343E00BE1D56 /* Info.plist */,
+				CA98BF1125A873EE006F701E /* LoadNearestBusStopsFromRemoteUseCaseTests.swift */,
 			);
 			path = MobiliteeSwiftTests;
 			sourceTree = "<group>";
@@ -140,9 +177,11 @@
 				TargetAttributes = {
 					CA9B737E25A7343E00BE1D56 = {
 						CreatedOnToolsVersion = 12.3;
+						LastSwiftMigration = 1230;
 					};
 					CA9B738725A7343E00BE1D56 = {
 						CreatedOnToolsVersion = 12.3;
+						LastSwiftMigration = 1230;
 					};
 				};
 			};
@@ -187,6 +226,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA8764BF25AA27160018B51F /* NearestBusStopsMapper.swift in Sources */,
+				CA98BF0A25A870D7006F701E /* NearestBusStopsLoader.swift in Sources */,
+				CA4224D225ACB3A800016C34 /* HTTPClient.swift in Sources */,
+				CA4224CE25AC7D8C00016C34 /* RemoteNearestBusStop.swift in Sources */,
+				CA98BF0E25A87317006F701E /* NearestBusStop.swift in Sources */,
+				CA98BF1725A88C15006F701E /* RemoteNearestBusStopsLoader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,6 +239,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA98BF1225A873EE006F701E /* LoadNearestBusStopsFromRemoteUseCaseTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -332,6 +378,7 @@
 		CA9B739425A7343E00BE1D56 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -349,6 +396,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.mobilitee.MobiliteeSwift;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -356,6 +404,7 @@
 		CA9B739525A7343E00BE1D56 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -380,6 +429,8 @@
 		CA9B739725A7343E00BE1D56 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = SS5G727W3X;
@@ -391,6 +442,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = app.mobilitee.MobiliteeSwiftTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -398,6 +450,8 @@
 		CA9B739825A7343E00BE1D56 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = SS5G727W3X;
