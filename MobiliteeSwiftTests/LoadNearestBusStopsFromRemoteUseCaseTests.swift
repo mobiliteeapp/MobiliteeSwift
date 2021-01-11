@@ -192,8 +192,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
                 XCTAssertEqual(receivedError, expectedError, "Expected failure with error \(receivedError), got \(receivedError) instead", file: file, line: line)
 
             default:
-                XCTFail("Expected result \(expectedResult), got \(receivedResult) instead")
-                
+                XCTFail("Expected result \(expectedResult), got \(receivedResult) instead", file: file, line: line)
             }
             
             exp.fulfill()
