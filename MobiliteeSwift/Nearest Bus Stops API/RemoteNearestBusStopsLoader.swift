@@ -26,7 +26,9 @@ public class RemoteNearestBusStopsLoader {
     }
     
     public func load(completion: @escaping (LoadResult) -> Void) {
-        client.get(from: url) { response in
+        client.get(from: url) { [weak self] response in
+            guard self != nil else { return }
+            
             switch response {
             case let .success((data, response)):
                 completion(RemoteNearestBusStopsLoader.map(data, with: response))

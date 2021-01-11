@@ -92,6 +92,20 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         })
     }
     
+    func test_load_doesNotDeliverResultAfterSUTInstanceHasBeenDeallocated() {
+        let url = URL(string: "https://a-url.com")!
+        let client = HTTPClientSpy()
+        var sut: RemoteNearestBusStopsLoader? = RemoteNearestBusStopsLoader(url: url, client: client)
+        
+        var receivedResult: RemoteNearestBusStopsLoader.LoadResult?
+        sut?.load { receivedResult = $0 }
+        
+        sut = nil
+        client.complete(withStatusCode: 200, data: emptyJSONWithSuccessCode())
+        
+        XCTAssertNil(receivedResult)
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(url: URL = URL(string: "https://any-url.com")!, file: StaticString = #filePath, line: UInt = #line) -> (sut: RemoteNearestBusStopsLoader, client: HTTPClientSpy) {
