@@ -49,10 +49,6 @@ Then the app should display a list of the nearest bus stops to the user's curren
 
 1. System delivers error.
 
-#### Wrong request - error course (sad path):
-
-1. System delivers error.
-
 ## Flowchart
 
 Not available.
@@ -81,7 +77,7 @@ Not available.
 
 | Property      | Type      |
 |---------------|-----------|
-| `id`          | `Int`     |
+| `id`          | `String`  |
 | `origin`      | `String`  |
 | `destination` | `String`  |
 
@@ -142,18 +138,6 @@ On session expired:
 {
     "code": "80",
     "description": "a description"
-}
-```
-
-On invalid request:
-
-```
-200 RESPONSE
-
-{
-    "code": "90",
-    "description": "a description",
-    "data": []
 }
 ```
 
