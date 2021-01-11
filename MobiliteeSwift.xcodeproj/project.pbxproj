@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA4224CE25AC7D8C00016C34 /* RemoteNearestBusStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA4224CD25AC7D8C00016C34 /* RemoteNearestBusStop.swift */; };
 		CA8764BF25AA27160018B51F /* NearestBusStopsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8764BE25AA27160018B51F /* NearestBusStopsMapper.swift */; };
 		CA98BF0A25A870D7006F701E /* NearestBusStopsLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA98BF0925A870D7006F701E /* NearestBusStopsLoader.swift */; };
 		CA98BF0E25A87317006F701E /* NearestBusStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA98BF0D25A87317006F701E /* NearestBusStop.swift */; };
@@ -26,6 +27,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CA4224CD25AC7D8C00016C34 /* RemoteNearestBusStop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteNearestBusStop.swift; sourceTree = "<group>"; };
 		CA8764BE25AA27160018B51F /* NearestBusStopsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearestBusStopsMapper.swift; sourceTree = "<group>"; };
 		CA98BF0925A870D7006F701E /* NearestBusStopsLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearestBusStopsLoader.swift; sourceTree = "<group>"; };
 		CA98BF0D25A87317006F701E /* NearestBusStop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearestBusStop.swift; sourceTree = "<group>"; };
@@ -70,6 +72,7 @@
 			children = (
 				CA98BF1625A88C15006F701E /* RemoteNearestBusStopsLoader.swift */,
 				CA8764BE25AA27160018B51F /* NearestBusStopsMapper.swift */,
+				CA4224CD25AC7D8C00016C34 /* RemoteNearestBusStop.swift */,
 			);
 			path = "Nearest Bus Stops API";
 			sourceTree = "<group>";
@@ -222,6 +225,7 @@
 			files = (
 				CA8764BF25AA27160018B51F /* NearestBusStopsMapper.swift in Sources */,
 				CA98BF0A25A870D7006F701E /* NearestBusStopsLoader.swift in Sources */,
+				CA4224CE25AC7D8C00016C34 /* RemoteNearestBusStop.swift in Sources */,
 				CA98BF0E25A87317006F701E /* NearestBusStop.swift in Sources */,
 				CA98BF1725A88C15006F701E /* RemoteNearestBusStopsLoader.swift in Sources */,
 			);
