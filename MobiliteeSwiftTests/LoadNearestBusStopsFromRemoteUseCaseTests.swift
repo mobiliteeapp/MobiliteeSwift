@@ -38,7 +38,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         
         samples.forEach { index, code in
             expect(sut, toCompleteWith: .failure(RemoteNearestBusStopsLoader.Error.invalidData), when: {
-                client.complete(withStatusCode: code, data: emptyJSONWithSuccessCode(), at: index)
+                client.complete(withStatusCode: code, data: makeBusStopsJSON([]), at: index)
             })
         }
     }
@@ -59,7 +59,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         
         samples.forEach { index, code in
             expect(sut, toCompleteWith: .failure(RemoteNearestBusStopsLoader.Error.invalidData), when: {
-                client.complete(withStatusCode: 200, data: emptyJSON(withCode: code), at: index)
+                client.complete(withStatusCode: 200, data: makeBusStopsJSON([], withCode: code), at: index)
             })
         }
     }
@@ -68,7 +68,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         let (sut, client) = makeSUT()
 
         expect(sut, toCompleteWith: .failure(RemoteNearestBusStopsLoader.Error.sessionExpired), when: {
-            client.complete(withStatusCode: 200, data: emptyJSONWithSessionExpiredCode())
+            client.complete(withStatusCode: 200, data: jsonWithSessionExpiredCode())
         })
     }
     
@@ -76,7 +76,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         let (sut, client) = makeSUT()
         
         expect(sut, toCompleteWith: .success([]), when: {
-            client.complete(withStatusCode: 200, data: emptyJSONWithSuccessCode())
+            client.complete(withStatusCode: 200, data: jsonWithSuccessCode())
         })
     }
     
@@ -87,8 +87,8 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         let stop2 = makeBusStop(id: 2)
 
         expect(sut, toCompleteWith: .success([stop1.model, stop2.model]), when: {
-            let json = [stop1.json, stop2.json]
-            client.complete(withStatusCode: 200, data: busStopsJSONData(busStops: json))
+            let busStops = [stop1.json, stop2.json]
+            client.complete(withStatusCode: 200, data: makeBusStopsJSON(busStops))
         })
     }
     
@@ -101,7 +101,7 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         sut?.load { receivedResult = $0 }
         
         sut = nil
-        client.complete(withStatusCode: 200, data: emptyJSONWithSuccessCode())
+        client.complete(withStatusCode: 200, data: jsonWithSuccessCode())
         
         XCTAssertNil(receivedResult)
     }
@@ -118,20 +118,21 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         return (sut, client)
     }
     
-    private func emptyJSONWithSuccessCode() -> Data {
-        return emptyJSON(withCode: "00")
+    private func jsonWithSuccessCode() -> Data {
+        return makeBusStopsJSON([], withCode: "00")
+    }
+
+    private func jsonWithSessionExpiredCode() -> Data {
+        return makeBusStopsJSON([], withCode: "80")
     }
     
-    private func emptyJSONWithSessionExpiredCode() -> Data {
-        return emptyJSON(withCode: "80")
-    }
-    
-    private func emptyJSON(withCode code: String) -> Data {
-        let emptyJSON: [String: Any] = [
+    private func makeBusStopsJSON(_ busStops: [[String: Any]], withCode code: String = "00") -> Data {
+        let json: [String: Any] = [
             "code": code,
-            "data": []
+            "data": busStops
         ]
-        return try! JSONSerialization.data(withJSONObject: emptyJSON)
+
+        return try! JSONSerialization.data(withJSONObject: json)
     }
     
     private func makeBusStop(id: Int) -> (model: NearestBusStop, json: [String: Any]) {
@@ -177,15 +178,6 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         ]
         
         return (line, lineJSON)
-    }
-    
-    private func busStopsJSONData(busStops: [[String: Any]]) -> Data {
-        let json: [String: Any] = [
-            "code": "00",
-            "data": busStops
-        ]
-
-        return try! JSONSerialization.data(withJSONObject: json)
     }
     
     private func trackForMemoryLeaks(_ object: AnyObject, file: StaticString = #filePath, line: UInt = #line) {
