@@ -51,7 +51,7 @@ public class RemoteNearestBusStopsLoader {
     }
 }
 
-extension RemoteNearestBusStop {
+private extension RemoteNearestBusStop {
     func toModel() -> NearestBusStop {
         return NearestBusStop(
             id: stopId,
@@ -64,19 +64,19 @@ extension RemoteNearestBusStop {
     }
 }
 
-extension Array where Element == RemoteNearestBusStop {
+private extension Array where Element == RemoteNearestBusStop {
     func toModel() -> [NearestBusStop] {
         self.map { $0.toModel() }
     }
 }
 
-extension RemoteNearestBusStopLine {
+private extension RemoteNearestBusStopLine {
     func toModel() -> NearestBusStopLine {
         return NearestBusStopLine(id: line, origin: nameA, destination: nameB)
     }
 }
 
-extension Array where Element == RemoteNearestBusStopLine {
+private extension Array where Element == RemoteNearestBusStopLine {
     func toModel() -> [NearestBusStopLine] {
         self.map { $0.toModel() }
     }
