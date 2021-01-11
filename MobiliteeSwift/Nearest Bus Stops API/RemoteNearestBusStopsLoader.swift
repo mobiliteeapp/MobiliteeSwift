@@ -42,9 +42,40 @@ public class RemoteNearestBusStopsLoader {
     private static func map(_ data: Data, with response: HTTPURLResponse) -> LoadResult {
         do {
             let busStops = try NearestBusStopsMapper.map(data, with: response)
-            return .success(busStops)
+            return .success(busStops.toLocal())
         } catch {
             return .failure(error)
         }
+    }
+}
+
+extension RemoteNearestBusStop {
+    func toLocal() -> NearestBusStop {
+        return NearestBusStop(
+            id: stopId,
+            latitude: geometry.coordinates[1],
+            longitude: geometry.coordinates[0],
+            name: stopName,
+            address: address,
+            distance: metersToPoint,
+            lines: lines.toLocal())
+    }
+}
+
+extension Array where Element == RemoteNearestBusStop {
+    func toLocal() -> [NearestBusStop] {
+        self.map { $0.toLocal() }
+    }
+}
+
+extension RemoteNearestBusStopLine {
+    func toLocal() -> NearestBusStopLine {
+        return NearestBusStopLine(id: line, origin: nameA, destination: nameB)
+    }
+}
+
+extension Array where Element == RemoteNearestBusStopLine {
+    func toLocal() -> [NearestBusStopLine] {
+        self.map { $0.toLocal() }
     }
 }
