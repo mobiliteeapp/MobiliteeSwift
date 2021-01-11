@@ -11,6 +11,22 @@ final class NearestBusStopsMapper {
     }
 
     private struct Stop: Decodable {
+        let stopId: Int
+        let geometry: Geometry
+        let stopName: String
+        let address: String
+        let metersToPoint: Int
+        let lines: [Line]
+    }
+    
+    private struct Geometry: Decodable {
+        let coordinates: [Double]
+    }
+    
+    private struct Line: Decodable {
+        let line: String
+        let nameA: String
+        let nameB: String
     }
         
     private static var OK_200: Int { return 200 }
@@ -24,7 +40,19 @@ final class NearestBusStopsMapper {
         }
         
         if root.code == NearestBusStopsMapper.successCode {
-            return []
+            return root.data.map { stop in
+                let lines = stop.lines.map { line in
+                    return NearestBusStopLine(id: line.line, origin: line.nameA, destination: line.nameB)
+                }
+                return NearestBusStop(
+                    id: stop.stopId,
+                    latitude: stop.geometry.coordinates[1],
+                    longitude: stop.geometry.coordinates[0],
+                    name: stop.stopName,
+                    address: stop.address,
+                    distance: stop.metersToPoint,
+                    lines: lines)
+            }
             
         } else if root.code == NearestBusStopsMapper.sessionExpiredCode {
             throw RemoteNearestBusStopsLoader.Error.sessionExpired

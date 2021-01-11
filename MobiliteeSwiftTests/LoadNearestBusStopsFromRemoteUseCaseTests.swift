@@ -80,6 +80,67 @@ class LoadNearestBusStopsFromRemoteUseCaseTests: XCTestCase {
         })
     }
     
+    func test_load_deliversBusStopsOn200HTTPResponseWithSuccessCodeAndJSONList() {
+        let (sut, client) = makeSUT()
+        
+        let line1 = NearestBusStopLine(id: "1", origin: "origin line 1", destination: "destination line 1")
+        
+        let line1JSON: [String: Any] = [
+            "line": line1.id,
+            "nameA": line1.origin,
+            "nameB": line1.destination
+        ]
+        
+        let line2 = NearestBusStopLine(id: "2", origin: "origin line 2", destination: "destination line 2")
+        
+        let line2JSON: [String: Any] = [
+            "line": line2.id,
+            "nameA": line2.origin,
+            "nameB": line2.destination
+        ]
+        
+        let stop1Lines = [line1, line2]
+        
+        let stop1 = NearestBusStop(
+            id: 1,
+            latitude: 1,
+            longitude: 1,
+            name: "stop 1",
+            address: "address 1",
+            distance: 1,
+            lines: stop1Lines)
+        
+        let stop1JSON: [String: Any] = [
+            "stopId": stop1.id,
+            "geometry": [
+                "coordinates": [
+                    stop1.longitude,
+                    stop1.latitude
+                ]
+            ],
+            "stopName": stop1.name,
+            "address": stop1.address,
+            "metersToPoint": stop1.distance,
+            "lines": [
+                line1JSON,
+                line2JSON
+            ]
+        ]
+        
+        let busStops = [stop1]
+        let busStopsJSON: [String: Any] = [
+            "code": "00",
+            "data": [
+                stop1JSON
+            ]
+        ]
+        
+        expect(sut, toCompleteWith: .success(busStops), when: {
+            let jsonData = try! JSONSerialization.data(withJSONObject: busStopsJSON)
+            client.complete(withStatusCode: 200, data: jsonData)
+        })
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(url: URL = URL(string: "https://any-url.com")!, file: StaticString = #filePath, line: UInt = #line) -> (sut: RemoteNearestBusStopsLoader, client: HTTPClientSpy) {
