@@ -42,7 +42,7 @@ public class RemoteNearestBusStopsLoader {
     private static func map(_ data: Data, with response: HTTPURLResponse) -> LoadResult {
         do {
             let busStops = try NearestBusStopsMapper.map(data, with: response)
-            return .success(busStops.toLocal())
+            return .success(busStops.toModel())
         } catch {
             return .failure(error)
         }
@@ -50,7 +50,7 @@ public class RemoteNearestBusStopsLoader {
 }
 
 extension RemoteNearestBusStop {
-    func toLocal() -> NearestBusStop {
+    func toModel() -> NearestBusStop {
         return NearestBusStop(
             id: stopId,
             latitude: geometry.coordinates[1],
@@ -58,24 +58,24 @@ extension RemoteNearestBusStop {
             name: stopName,
             address: address,
             distance: metersToPoint,
-            lines: lines.toLocal())
+            lines: lines.toModel())
     }
 }
 
 extension Array where Element == RemoteNearestBusStop {
-    func toLocal() -> [NearestBusStop] {
-        self.map { $0.toLocal() }
+    func toModel() -> [NearestBusStop] {
+        self.map { $0.toModel() }
     }
 }
 
 extension RemoteNearestBusStopLine {
-    func toLocal() -> NearestBusStopLine {
+    func toModel() -> NearestBusStopLine {
         return NearestBusStopLine(id: line, origin: nameA, destination: nameB)
     }
 }
 
 extension Array where Element == RemoteNearestBusStopLine {
-    func toLocal() -> [NearestBusStopLine] {
-        self.map { $0.toLocal() }
+    func toModel() -> [NearestBusStopLine] {
+        self.map { $0.toModel() }
     }
 }
